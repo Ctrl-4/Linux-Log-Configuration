@@ -73,6 +73,72 @@ tail -f /var/log/spring-log.log
 - 정상작동 확인 <br>
 ![image](https://github.com/user-attachments/assets/3f48fde4-e12e-4fa8-ba4a-b9cf245aedad)
 
+# 🚩 에러 발생시 에러 발생 내역을 모니터링하여 사용자에게 알림 전송
+### 1. 모니터링 shell 파일 생성
+```sh
+#!/bin/bash
+
+# 로그 파일 경로
+ALERT_LOG="/var/log/spring-log.log"
+ERROR_LOG_FILE="/var/log/error_detected.log"
+
+# Slack Webhook URL (사용자 맞춤 설정 필요)
+SLACK_WEBHOOK_URL="https://hooks.slack.com/services/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"
+
+# **현재 시간을 UTC 기준으로 변환**
+CURRENT_TIME=$(date -u "+%Y-%m-%d %H:%M:%S")
+START_TIME=$(date -u --date="1 minute ago" "+%Y-%m-%d %H:%M:%S")
+
+# **디버깅: 현재 시간과 1분 전 시간 출력**
+echo "현재 시스템 시간 (UTC 기준): $CURRENT_TIME"
+echo "스크립트에서 계산한 1분 전 시간 (UTC 기준): $START_TIME"
+
+# 최근 1분 동안의 첫 번째 ERROR 로그만 추출 (시간 범위 + 정확한 ERROR 포함)
+ERROR_LINE=$(awk -v start="$START_TIME" -v end="$CURRENT_TIME" '
+/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/ {
+    log_time = substr($0, 1, 19);
+    if (log_time >= start && log_time <= end) {
+        if ($0 ~ / ERROR /) {
+            print $0;
+            exit;
+        }
+    }
+}' "$ALERT_LOG")
+
+# ERROR 로그 개수 확인
+if [[ -n "$ERROR_LINE" ]]; then
+    ERROR_COUNT=1
+else
+    ERROR_COUNT=0
+fi
+
+# **디버깅: 추출된 ERROR 로그 개수와 내용 출력**
+echo "스크립트에서 감지한 최근 1분간의 ERROR 로그 개수: $ERROR_COUNT"
+echo "스크립트에서 감지한 ERROR 로그 내용:"
+```
+* 권한 부여
+```bash
+sudo chmod 777 /home/ubuntu/shelldir/detectError.sh
+```
+
+* 실행 테스트
+```
+./home/ubuntu/shelldir/detectError.sh
+```
+
+### 2. Crontab으로 배치 자동화하기
+* crontab에 등록하기 (crontab -e 명령)
+```bash
+* * * * * /home/ubuntu/shelldir/detectError.sh
+```
+
+* 1분마다 error로그 확인
+
+![alt text](./img/cpu_log.png)
+
+* slack 알림
+
+![alt text](./img/ap_restart.png)
 
 # 🚩 CPU 부하율 표시하고, 일정 수준 넘으면 리부팅
 ### 1. 모니터링하는 shell 파일 생성
