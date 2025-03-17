@@ -57,13 +57,22 @@ tail -f /var/log/spring-log.log
 ```
 
 ### 2. Slack 알림전송
-![image](https://github.com/user-attachments/assets/83266452-9b4a-4c30-bad7-a97fad979f11)
+- Incoming Webhooks 앱을 설치, 생성된 WebHook URL 확인.
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/83266452-9b4a-4c30-bad7-a97fad979f11" width="100%"></td>
+    <td><img src="https://github.com/user-attachments/assets/2769daa5-3e0d-438d-9552-d6a4d873f557" width="100%"></td>
+  </tr>
+</table>
 
-![image](https://github.com/user-attachments/assets/2769daa5-3e0d-438d-9552-d6a4d873f557)
+- 알림전송 test
+```
+ curl -X POST -H 'Content-type: application/json' --data '{"text":"서버가 정상 작동 중입니다."}' https://hooks.slack.com/services/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
+```
 
-![image](https://github.com/user-attachments/assets/b7929580-dd95-4687-ab3d-80adc765b985)
-
+- 정상작동 확인 <br>
 ![image](https://github.com/user-attachments/assets/3f48fde4-e12e-4fa8-ba4a-b9cf245aedad)
+
 
 # 🚩 CPU 부하율 표시하고, 일정 수준 넘으면 리부팅
 ### 1. 모니터링하는 shell 파일 생성
