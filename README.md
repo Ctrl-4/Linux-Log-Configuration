@@ -3,7 +3,7 @@ Linux를 활용해서 어플리케이션의 로그를 자동으로 분석
 
 # Log 파일 분석하기
 ### 1. Spring Application 로그 저장 파일 지정
-yml 파일 수정하여 Ubuntu 내 로그 저장 위치 지정하기
+* yml 파일 수정하여 Ubuntu 내 로그 저장 위치 지정하기
 ```yml
 logging:
   file:
@@ -13,3 +13,14 @@ logging:
   level:
     root: info
 ```
+
+* Ubuntu 내 로그 위치 권한 변경하기
+```bash
+$sudo chmod 777 /var/log
+```
+
+* 로그 확인하기
+```
+tail -f /var/log/spring-log.log
+```
+
