@@ -134,11 +134,11 @@ sudo chmod 777 /home/ubuntu/shelldir/detectError.sh
 
 * 1분마다 error로그 확인
 
-![alt text](./img/cpu_log.png)
+![alt text](./img/error_log.png)
 
 * slack 알림
 
-![alt text](./img/ap_restart.png)
+![alt text](./img/slack_alert.png)
 
 # 🚩 CPU 부하율 표시하고, 일정 수준 넘으면 리부팅
 ### 1. 모니터링하는 shell 파일 생성
